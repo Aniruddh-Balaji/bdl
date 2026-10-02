@@ -6,15 +6,11 @@
 #include<chrono>
 using namespace std;
 class Circuits{
-    protected:
-        int a;
     public:
         Circuits(){}
         virtual ~Circuits(){}
 };
-class Combinational:public Circuits{
-    protected:
-        int a;
+class Combinational:public Circuits{        
     public:
         virtual ~Combinational(){}
         Combinational(){}
@@ -124,6 +120,7 @@ class Xor: public Combinational{
         bool get_Y() const{return Y;}
         virtual ~Xor(){/*cout<<"Xor destroyed\n";*/}
 };
+/*class Xnor: public Combinational{}*/
 class Full_Adder: public Combinational{
     protected:
         bool A;
@@ -244,26 +241,31 @@ class Comparator:public Combinational{
             this->B1=B1;
             this->B0=B0;
             Not n1(B1);
-            Or n2(A1,n1.get_Y());
-            And n3(B0,A0);
-            And n4(n2.get_Y(),n3.get_Y());
-            And n5(B1,A1);
-            Or n6(n5.get_Y(),n4.get_Y());
-            AgtB=n6.get_Y();
-            Xor n7(A1,B1);
-            Xor n8(A0,B0);
-            Not n9(n7.get_Y());
-            Not n10(n8.get_Y());
-            And n11(n9.get_Y(),n10.get_Y());
-            AeqB=n11.get_Y();
+            And n2(A1,n1.get_Y());
+            Xor n3(A1,B1);
+            Not n4(n3.get_Y());
+            Not n5(B0);
+            And n6(A0, n5.get_Y());
+            And n7(n4.get_Y(),n6.get_Y());
+            Or n8(n2.get_Y(),n7.get_Y());
+            this->AgtB=n8.get_Y();
+            Xor n9(A1,B1);
+            Xor n10(A0,B0);
+            Not n11(n9.get_Y());
+            Not n12(n10.get_Y());
+            And n13(n11.get_Y(),n12.get_Y());
+            this->AeqB=n13.get_Y();
             if(AeqB==0 && AgtB==0){
-                AltB==1;
+                this->AltB=1;
+            }
+            else{
+                this->AltB=0;
             }
         }
         ~Comparator(){/*cout<<"Comparator\n";*/}
-        bool get_AeqB() const{return AgtB;}
+        bool get_AeqB() const{return AeqB;}
         bool get_AltB() const{return AltB;}
-        bool get_AgtB() const{return AeqB;}
+        bool get_AgtB() const{return AgtB;}
 };
 class Demux : public Combinational{
     protected:
@@ -286,6 +288,7 @@ class Demux : public Combinational{
         bool get_Y0() const{return Y0;}
         bool get_Y1() const{return Y1;}
 };
+
 class Multiplier: public Combinational{
     protected:
         bool A;
@@ -309,51 +312,31 @@ class Multiplier: public Combinational{
         bool get_Y0() const{return Y0;}
         bool get_Y1() const{return Y1;}
 };
-
-
-/*class Encoder:public Combinational{
+/*class ParityGenerator: public Combinational{
+    //even number of 1s
     protected:
-        vector<bool>A;
-        vector<bool>Y;
+        vector<bool>inp;
+        vector<bool>out;
     public:
-        Encoder(vector<bool> A){
-            this->A=A;
-            for(int i=0;i<log2(A.size());i++){
-                Y.push_back(0);
-            }
-            int p=0;
-            int c=0;
-            for(int i=0;i<A.size();i++){
-
-            +if(A[i]==1){
-                    p+=1;
-                    c=i;
-                }
-                if(p>1){
-                    break;
-                }
-            }
-            if(p==1){*/
-/*
-class Stream_Mux{
-    protected:
-        vector<bool>A;
-        vector<bool>B;
-        vector<bool>S;
-        vector<bool>Y;
-    public:
-        Mux(vector<bool>A,vector<bool>B,vector<bool>S){
-            if(A.size()!=B.size()){
-                throw"Cannot evaluate because your A and B don't match in size\n";
-            else{
-                if(2**(C.size())<A.size()){
-                    throw"not enough values in your selction bits(S)\n";
+        ParityGenerator(vector<bool> &inp){
+            this->inp=inp;
+            bool p=0;
+            if(inp.size()==1){
+                if(inp[0]==0){
+                    p=0;
                 }
                 else{
-                    this->A=A;
-                    this->B=B;
-                    this->S=S;
-                    this->Y=Y;
+                    p=1;
+                }
+            }
+            for(int i=0;i<inp.size()-1;i++){
+                Xor n1(inp[i],inp[i+1]);
+                p+=n1.get_Y();
+            }
+            out=inp;
+            out.push_back(op);
+        }
+        vector <bool> 
 */
 /*class D_latch:public Combinational{
     protected:
@@ -365,58 +348,108 @@ class Stream_Mux{
             while(1){
         
 };*/
-/*class Sequential:public Circuit{
+class Sequential : public Circuits{
       protected:
           bool Clk;
           bool Rst;
-          bool En;
-          vector<bool> Input;
-          vector<bool> Output;
       public:
           virtual void Clock(int S){
-              Clk=0;
-              sleep_for(milliseconds(S));
-              Clk=1;
-              sleep_for(milliseconds(S));
+              while(1){
+                Clk=0;
+                std::this_thread::sleep_for(std::chrono::milliseconds(S));
+                Clk=1;
+                std::this_thread::sleep_for(std::chrono::milliseconds(S));
+              }
           }
           virtual void Reset(int S){
-              Reset=1;
-              sleep_for(milliseconds(S));
-              Reset=0;
+              Rst=1;
+              std::this_thread::sleep_for(std::chrono::milliseconds(S));
+              Rst=0;
           }
-          Sequential(vector<bool> &Input,vector<bool> &Output){
+          /*Sequential(vector<bool> &Input,vector<bool> &Output){
               this->Input=Input;
               this->Output=Output;
-          }
+          }*/
           virtual ~Sequential(){}
 };
-class D_latch:public Sequential{
+class Dlatch:public Sequential{
     protected:
-        vector <int> D;
-        vector <int> Q;
+        bool D;
+        bool Q;
     public:
-        D_latch(bool start,vector<int> D,int S0,int S1){
-            int sum=0;
-            Q=new
-            for(int i=0;i<D.size();i++){
-                sum+=D[i];
+        Dlatch(int S,int R){
+                Q=0;
+                std::thread ResetThread(&Sequential::Reset,this,R);
+                std::thread ClockThread(&Sequential::Clock,this,S);
+                while(1){
+                        cin>>D;
+                        if(Clk==1 && Rst==0){
+                            Q=D;
+                        }
+                        cout<<"Reset= "<<Rst<<" ";
+                        cout<<"CLK= "<<Clk<<" ";
+                        cout<<"Q= "<<Q<<endl;
+                 }
+                ResetThread.join();
+                ClockThread.join();
+        }
+        virtual ~Dlatch(){}
+        bool get_Q (){return Q;}
+};
+class Dlatch2 : public Sequential{
+    protected:
+        bool D;
+        bool Q;
+        bool Qn;
+    public:
+        Dlatch2(){
+            Q=0;
+            Qn=1;
+        }
+        void Setvalue(bool D,bool en){ 
+            Nand n1(D,en);
+            Nand n2(n1.get_Y(),en);
+            for(int i=0;i<10;i++){
+                Nand n3(Qn,n1.get_Y());
+                Nand n4(Q,n2.get_Y());
+                bool next_Q = n3.get_Y();
+                bool next_Qn = n4.get_Y();
+                if(Q==next_Q && Qn==next_Qn){
+                    break;}
+                Q=next_Q;
+                Qn=next_Qn;
             }
-            Reset(S0);
-            for(int i=0;i<sum*2*S1;i++){
-                Sequential::Clock(S1);
-                if(Clk==1){
-                    Q[i]=D[i];
-                }
-            }
-        }*/
-
-            
-
-
-
-
-int main(){
-    for(int i=0;i<2;i++){
+        }
+        bool get_Q(){return Q;}
+        bool get_Qn(){return Qn;}
+        virtual ~Dlatch2(){}
+}; 
+class Dflipflop : public Sequential{
+    protected:
+        bool D;
+        bool Q;
+        bool Qn;
+        Dlatch2 d1;
+        Dlatch2 d2;
+    public:
+        Dflipflop(){Q=0;Qn=1;}
+        void Setvalue(bool D,bool Clk){
+            this->D=D;
+            Not n1(Clk);
+            d1.Setvalue(D,n1.get_Y());
+            d2.Setvalue(d1.get_Q(),Clk);
+            Q=d2.get_Q();
+            Qn=d2.get_Qn();
+        }
+        virtual ~Dflipflop(){}
+        bool get_Q(){return Q;}
+        bool get_Qn(){return Qn;}
+};
+/*class Dflipflop:public Sequential{
+    protected:
+        bool */
+//int main(){
+   /* for(int i=0;i<2;i++){
         for(int j=0;j<2;j++){
             Nand n1(i,j);
             cout<<"Nand Gate: "<<"A: "<<i<<" B: "<<j<<" Y: "<<n1.get_Y()<<endl;
@@ -449,6 +482,6 @@ int main(){
        }
        Not n9(i);
        cout<<"Not Gate: "<<"A: "<<i<<" Y: "<<n9.get_Y()<<endl;
-    }
-}
+    }*/
+//}
 
