@@ -420,8 +420,8 @@ class Dlatch2 : public Sequential{
                 Qn=next_Qn;
             }
         }
-        bool get_Q(){return Q;}
-        bool get_Qn(){return Qn;}
+        bool get_Q()const{return Q;}
+        bool get_Qn()const{return Qn;}
         virtual ~Dlatch2(){}
 }; 
 class Dflipflop : public Sequential{
@@ -442,8 +442,41 @@ class Dflipflop : public Sequential{
             Qn=d2.get_Qn();
         }
         virtual ~Dflipflop(){}
-        bool get_Q(){return Q;}
-        bool get_Qn(){return Qn;}
+        bool get_Q()const{return Q;}
+        bool get_Qn()const{return Qn;}
+};
+class Counter : public Sequential{
+    protected:
+        Dflipflop f1;
+    public:
+        Counter(){}
+        void Setvalue(bool Clk){
+            Not n1(f1.get_Q());
+            f1.Setvalue(n1.get_Y(),Clk);
+        }
+        virtual ~Counter(){}
+        bool get_Q()const{return f1.get_Q();}
+};
+class Counter3b : public Sequential{
+    protected:
+        Dflipflop f1;
+        Dflipflop f2;
+        Dflipflop f3;
+    public:
+        Counter3b(){}
+        void Setvalue(bool Clk){
+            Not n1(f1.get_Q());
+            Xor n2(f2.get_Q(),f1.get_Q());
+            And n3(f1.get_Q(),f2.get_Q());
+            Xor n4(n3.get_Y(),f3.get_Q());
+            f1.Setvalue(n1.get_Y(),Clk);
+            f2.Setvalue(n2.get_Y(),Clk);
+            f3.Setvalue(n4.get_Y(),Clk);
+        }
+        virtual ~Counter3b(){}
+        bool get_Q0()const{return f1.get_Q();}
+        bool get_Q1()const{return f2.get_Q();}
+        bool get_Q2()const{return f3.get_Q();}
 };
 /*class Dflipflop:public Sequential{
     protected:
