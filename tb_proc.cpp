@@ -1,0 +1,67 @@
+#include "proc.hpp"
+using namespace bdl;
+using namespace std;
+using namespace vcd;
+void to_binary(int i,bool v[]){
+    int c=0;
+    while(i){
+        v[c]=i%2;
+        i/=2;
+        c++;
+    }
+}
+int main(){
+    Vcdwriter v1("vcd.dump");
+    int n1=v1.Addsignal("A",16);
+    int n2=v1.Addsignal("B",16);
+    int n3=v1.Addsignal("Y",16);
+    int n4=v1.Addsignal("Opcode",4);
+    int n5=v1.Addsignal("Equal",1);
+    int n6=v1.Addsignal("Greater",1);
+    int n7=v1.Addsignal("lesser",1);
+    int n8=v1.Addsignal("zero",1);
+    int n9=v1.Addsignal("Carry",1);
+    int OP;
+    int A;
+    int B;
+    bool a[16]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    bool b[16]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    bool op[4]={0,0,0,0};
+    int t=0;
+    v1.Writetimestamp(t);
+    while(1){
+        cout<<"enter opcode:\n";
+        cin>>OP;
+        if(OP>=15 || OP<0 ){
+            break;
+        }
+        else{
+            cout<<"enter operand A:\n";
+            cin>>A;
+            cout<<"enter operand b:\n";
+            cin>>B;
+            to_binary(OP,op);
+            to_binary(A,a);
+            to_binary(B,b);
+            ALU16 ALU(a,b,op);
+            v1.Setvalue(n1,A);
+            v1.Setvalue(n2,B);
+            int s=0;
+            for(int i=0;i<16;i++){
+                s+=(ALU.get_Y(i)*(int)pow(2,i));
+            }
+            t+=5;
+            v1.Setvalue(n3,s);
+            v1.Setvalue(n4,OP);
+            v1.Setvalue(n5,ALU.get_Equal());
+            v1.Setvalue(n6,ALU.get_Greater());
+            v1.Setvalue(n8,ALU.get_Zero());
+            v1.Setvalue(n7,ALU.get_Lesser());
+            v1.Setvalue(n9,ALU.get_Carry());
+            v1.Writetimestamp(t);
+        }
+    }
+    v1.Finish(t+5);
+    v1.Writetimestamp(t);
+    v1.Writetimestamp(t+5);
+};
