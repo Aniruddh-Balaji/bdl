@@ -1,5 +1,5 @@
 #include "bdllibrary.hpp"
-#include "vcd_dumper.hpp"
+#include "../vcd_dumper.hpp"
 using namespace bdl;
 
 class Adder16 : public Combinational {
