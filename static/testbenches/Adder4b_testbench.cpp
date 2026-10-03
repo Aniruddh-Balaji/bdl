@@ -1,5 +1,5 @@
-#include "bdllibrary.hpp"
-#include "vcd_dumper.hpp"
+#include "../bdllibrary.hpp"
+#include "../../vcd_dumper.hpp"
 #include <string>
 using namespace std;
 using namespace bdl;

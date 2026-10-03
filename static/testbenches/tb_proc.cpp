@@ -1,4 +1,4 @@
-#include "proc.hpp"
+#include "../proc.hpp"
 using namespace bdl;
 using namespace std;
 using namespace vcd;
