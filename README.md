@@ -10,13 +10,24 @@ Banni's Digital library in c++ with a few basic digital components set up for yo
 Here is the output of `tree .`:
 ```
 .
-├── bdllibrary.hpp
-├── counter_testbench.cpp
+├── docs
+│   └── counter_testbench_img.jpeg
+├── dynamic
+│   ├── bdllibrary.hpp
+│   ├── testbenches
+│   │   └── counter_testbench.cpp
+│   └── transpiler.cpp
 ├── LICENSE
-├── proc.hpp
 ├── README.md
 ├── sample.gates
-├── transpiler.cpp
+├── static
+│   ├── bdllibrary.hpp
+│   ├── proc.hpp
+│   ├── testbenches
+│   │   ├── Adder4b_testbench.cpp
+│   │   ├── counter_testbench.cpp
+│   │   └── tb_proc.cpp
+│   └── transpiler.cpp
 └── vcd_dumper.hpp
 ```
 
