@@ -1,8 +1,11 @@
 #include "../proc.hpp"
+#include<cstdint>
+#include<cstring>
 using namespace bdl;
 using namespace std;
 using namespace vcd;
-void to_binary(int i,bool v[]){
+void to_binary(int i,bool v[],int size=16){
+    memset(v,0,size*sizeof(bool));
     int c=0;
     while(i){
         v[c]=i%2;
@@ -40,7 +43,7 @@ int main(){
             cin>>A;
             cout<<"enter operand b:\n";
             cin>>B;
-            to_binary(OP,op);
+            to_binary(OP,op,4);
             to_binary(A,a);
             to_binary(B,b);
             ALU16 ALU(a,b,op);

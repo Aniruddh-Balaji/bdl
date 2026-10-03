@@ -301,7 +301,7 @@ public:
 
 class ALU16 : public Combinational {
 protected:
-  bool A[16], B[16], Y[16], opcode[4], Equal, Lesser, Greater, Carry, Zero;
+  bool A[16]={}, B[16]={}, Y[16]={}, opcode[4]={}, Equal, Lesser, Greater, Carry, Zero;
 
 public:
   ALU16(bool A[16], bool B[16], bool opcode[4]) {
