@@ -5,6 +5,7 @@
 #include<thread>
 #include<chrono>
 using namespace std;
+namespace bdl{
 class Circuits{
     public:
         Circuits(){}
@@ -120,7 +121,26 @@ class Xor: public Combinational{
         bool get_Y() const{return Y;}
         virtual ~Xor(){/*cout<<"Xor destroyed\n";*/}
 };
-/*class Xnor: public Combinational{}*/
+class Xnor: public Combinational{
+    protected:
+        bool A;
+        bool B;
+        bool Y;
+    public:
+        Xnor(bool A,bool B){
+            this->A=A;
+            this->B=B;
+            Nand n1(A,A);
+            Nand n2(n1.get_Y(),B);
+            Nand n3(B,B);
+            Nand n4(A,n3.get_Y());
+            Nand n5(n2.get_Y(),n4.get_Y());
+            Nand n6(n5.get_Y(),n5.get_Y());
+            Y=n6.get_Y();
+        }
+        bool get_Y() const{return Y;}
+        virtual ~Xnor(){/*cout<<"Xor destroyed\n";*/}
+};
 class Full_Adder: public Combinational{
     protected:
         bool A;
@@ -150,6 +170,32 @@ class Full_Adder: public Combinational{
         bool get_Y() const{return Y;}
         bool get_Cout() const{return Cout;}
         virtual ~Full_Adder(){/*cout<<"Full adeer destroyed\n";*/}
+};
+class Ripplecarryadder4b : public Combinational{
+    protected:
+        bool Cin;
+        vector<bool> Inp1;
+        vector<bool> Inp2;
+        vector<bool> Out;
+        bool Cout;
+    public:
+        Ripplecarryadder4b(vector <bool> Inp1,vector<bool> Inp2,bool Cin){
+            this->Inp1=Inp1;
+            this->Inp2=Inp2;
+            this->Cin=Cin;
+            Full_Adder f1(Inp1[0],Inp2[0],Cin);
+            Full_Adder f2(Inp1[1],Inp2[1],f1.get_Cout());
+            Full_Adder f3(Inp1[2],Inp2[2],f2.get_Cout());
+            Full_Adder f4(Inp1[3],Inp2[3],f3.get_Cout());
+            Out[0]=f1.get_Y();
+            Out[1]=f2.get_Y();
+            Out[2]=f3.get_Y();
+            Out[3]=f4.get_Y();
+            Cout=f4.get_Cout();    
+        }
+        virtual ~Ripplecarryadder4b(){}
+        vector <bool> get_Y()const{return Out;}
+        bool get_Cout()const{return Cout;}
 };
 class Mux:public Combinational{
     protected:
@@ -338,16 +384,6 @@ class Multiplier: public Combinational{
         }
         vector <bool> 
 */
-/*class D_latch:public Combinational{
-    protected:
-        bool D;
-        bool Q;
-        bool ck;
-    public:
-        D_latch(){
-            while(1){
-        
-};*/
 class Sequential : public Circuits{
       protected:
           bool Clk;
@@ -366,10 +402,6 @@ class Sequential : public Circuits{
               std::this_thread::sleep_for(std::chrono::milliseconds(S));
               Rst=0;
           }
-          /*Sequential(vector<bool> &Input,vector<bool> &Output){
-              this->Input=Input;
-              this->Output=Output;
-          }*/
           virtual ~Sequential(){}
 };
 class Dlatch:public Sequential{
@@ -477,10 +509,7 @@ class Counter3b : public Sequential{
         bool get_Q0()const{return f1.get_Q();}
         bool get_Q1()const{return f2.get_Q();}
         bool get_Q2()const{return f3.get_Q();}
-};
-/*class Dflipflop:public Sequential{
-    protected:
-        bool */
+};}
 //int main(){
    /* for(int i=0;i<2;i++){
         for(int j=0;j<2;j++){
