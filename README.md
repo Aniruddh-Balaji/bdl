@@ -33,6 +33,7 @@ Here is the output of `tree .`:
 
 `bdllibrary.hpp` contains all the basic combinatorial and sequential circuits that one needs.
 We can see it at a glance in the below class diagram.
+Note: `static/` is the main directory, `dynamic/` is a work-in-progress model with gates that can have variable values without reinitialising the object.
 
 We also have a `counter_testbench.cpp`, which is a test bench to test our counter3b which is derived in combinational(in `bdllibrary.hpp`).
 This also tests our `vcd_dumper.hpp`. 
