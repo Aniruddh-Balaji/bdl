@@ -86,3 +86,14 @@ Here's an ASCII class diagram depicting only inheritances:
                                                └── ALU16 
 ```
 
+## How to use
+
+First, clone this repo. The way this works, is that our `bdllibrary.hpp`(present in both static/ and dynamic/) is a library.
+We can `#include "bdllibrary.hpp"` it in our CPP code.
+
+We can directly use objects of our digital library in our CPP code, as seen in the examples under `testbenches/`(both in static/ and dynamic/).
+Alternatively, we may also use our transpiler.cpp(compiled) to transpile our *.gates file, which gives us a class, corresponding to whatever we've written down.
+The method of running this is mentioned above.
+
+We can also make use of the `vcd_dumper.hpp`, to give suitable output in a VCD format, which can be viewed through any wave viewer, such as `gtkwave`.
+(Look at the testbenches to see an example of this usage.)
