@@ -1,5 +1,5 @@
-MyModule
+TestModule
 2
-And 2
-Not 1
-0 1 And Not
+And3 3
+Or4 4
+1 2 3 4 5 Or4 6 And3

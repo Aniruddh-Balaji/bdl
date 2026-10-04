@@ -89,10 +89,10 @@ int main() {
     string output = val.top();
     cout << "class " << modname << " : public Combinational {\n";
     cout << "protected:\n";
-    cout << "  bool& ";
+    cout << "  bool &";
     for (int i = 0; i <= inputcount; i++) {
       if (i > 0)
-        cout << ", ";
+        cout << ", &";
       cout << wirename(i);
     }
     cout << ";\n";
