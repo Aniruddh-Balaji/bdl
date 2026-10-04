@@ -14,7 +14,7 @@ void to_binary(int i,bool v[],int size=16){
     }
 }
 int main(){
-    Vcdwriter v1("vcd.dump");
+    Vcdwriter v1("dump.vcd");
     int n1=v1.Addsignal("A",16);
     int n2=v1.Addsignal("B",16);
     int n3=v1.Addsignal("Y",16);
@@ -33,15 +33,25 @@ int main(){
     int t=0;
     v1.Writetimestamp(t);
     while(1){
-        cout<<"enter opcode:\n";
+	cout<<endl<<endl<<"--Welcome to Digital Electronics Circuits Designer--"<<endl;
+	cout<<"Opcode matching:"<<endl;
+	cout<<"0 - ADD"<<endl<<"1 - SUB"<<endl;
+	cout<<"2 - AND"<<endl<<"3 - OR"<<endl;
+	cout<<"4 - XOR"<<endl<<"5 - NOT (single input)"<<endl;
+	cout<<"6 - NAND"<<endl<<"7 - NOR"<<endl;
+	cout<<"8 - Increment (single input)"<<endl<<"9 - Decrement (single input)"<<endl;
+	cout<<"10 - Multiplier"<<endl<<"11 - Shift left (single input)"<<endl;
+	cout<<"12 - Shift right"<<endl<<"13 - Pass A (will just output A only regardless of B)"<<endl;
+	cout<<"14 - Pass B (will just output B regardless of A)"<<endl<<endl;
+        cout<<"enter opcode: ";
         cin>>OP;
         if(OP>=15 || OP<0 ){
             break;
         }
         else{
-            cout<<"enter operand A:\n";
+            cout<<"enter operand A: ";
             cin>>A;
-            cout<<"enter operand b:\n";
+            cout<<"enter operand B: ";
             cin>>B;
             to_binary(OP,op,4);
             to_binary(A,a);
