@@ -15,7 +15,7 @@ vector<bool> to_binary(int i){
     return v;
 }
 int main(){
-    Vcdwriter v("vcd.dump");
+    Vcdwriter v("dump.vcd");
     int a=v.Addsignal("A",4);
     int b=v.Addsignal("B",4);
     int c=v.Addsignal("Y",5);

@@ -6,7 +6,7 @@ using namespace vcd;
 
 int main() {
   Counter3b c;
-  Vcdwriter v("vcd.dump");
+  Vcdwriter v("dump.vcd");
   int a = v.Addsignal("Clk", 1);
   int b = v.Addsignal("Q", 3);
   int t = 0;

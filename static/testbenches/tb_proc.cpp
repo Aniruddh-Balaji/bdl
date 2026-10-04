@@ -21,8 +21,8 @@ int main(){
     int n4=v1.Addsignal("Opcode",4);
     int n5=v1.Addsignal("Equal",1);
     int n6=v1.Addsignal("Greater",1);
-    int n7=v1.Addsignal("lesser",1);
-    int n8=v1.Addsignal("zero",1);
+    int n7=v1.Addsignal("Lesser",1);
+    int n8=v1.Addsignal("Zero",1);
     int n9=v1.Addsignal("Carry",1);
     int OP;
     int A;
@@ -33,7 +33,8 @@ int main(){
     int t=0;
     v1.Writetimestamp(t);
     while(1){
-	cout<<endl<<endl<<"--Welcome to Digital Electronics Circuits Designer--"<<endl;
+	cout<<endl<<endl<<"--Welcome to Digital Electronics Circuits Designer--"<<endl<<endl;
+	cout<<"Enter an opcode two inputs A and B ranging from 0-65535"<<endl<<endl;
 	cout<<"Opcode matching:"<<endl;
 	cout<<"0 - ADD"<<endl<<"1 - SUB"<<endl;
 	cout<<"2 - AND"<<endl<<"3 - OR"<<endl;
@@ -42,7 +43,7 @@ int main(){
 	cout<<"8 - Increment (single input)"<<endl<<"9 - Decrement (single input)"<<endl;
 	cout<<"10 - Multiplier"<<endl<<"11 - Shift left (single input)"<<endl;
 	cout<<"12 - Shift right"<<endl<<"13 - Pass A (will just output A only regardless of B)"<<endl;
-	cout<<"14 - Pass B (will just output B regardless of A)"<<endl<<endl;
+	cout<<"14 - Pass B (will just output B regardless of A)"<<endl<<endl<<"For opcodes with single input marked, put the desired input in A"<<endl<<endl;
         cout<<"enter opcode: ";
         cin>>OP;
         if(OP>=15 || OP<0 ){
