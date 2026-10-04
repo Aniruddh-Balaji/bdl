@@ -12,16 +12,18 @@ public:
   virtual ~Circuits() {}
 };
 class Combinational : public Circuits {
+protected:
+  bool Y;
+
 public:
   virtual ~Combinational() {}
   Combinational() {}
-  bool get_Y() { return 0; };
+  virtual bool get_Y() { return Y; };
 };
 class Nand : public Combinational {
 protected:
   bool A;
   bool B;
-  bool Y;
 
 public:
   Nand(bool A, bool B) {
@@ -34,14 +36,12 @@ public:
       Y = 1;
     }
   }
-  bool get_Y() const { return Y; }
   virtual ~Nand() { /*cout<<"Nand Destroyed\n";*/ }
 };
 class Nor : public Combinational {
 protected:
   bool A;
   bool B;
-  bool Y;
 
 public:
   Nor(bool A, bool B) {
@@ -54,13 +54,11 @@ public:
       Y = 0;
     }
   }
-  bool get_Y() const { return Y; }
   virtual ~Nor() { /*cout<<"Nor destroyed\n";*/ }
 };
 class Not : public Combinational {
 protected:
   bool A;
-  bool Y;
 
 public:
   Not(bool A) {
@@ -68,14 +66,12 @@ public:
     Nand n1(A, A);
     Y = n1.get_Y();
   }
-  bool get_Y() const { return Y; }
   virtual ~Not() { /*cout<<"Nor destroyed\n";*/ }
 };
 class And : public Combinational {
 protected:
   bool A;
   bool B;
-  bool Y;
 
 public:
   And(bool A, bool B) {
@@ -85,14 +81,12 @@ public:
     Nand n2(n1.get_Y(), n1.get_Y());
     this->Y = n2.get_Y();
   }
-  bool get_Y() const { return Y; }
   virtual ~And() { /*cout<<"And destroyed\n";*/ }
 };
 class Or : public Combinational {
 protected:
   bool A;
   bool B;
-  bool Y;
 
 public:
   Or(bool A, bool B) {
@@ -102,14 +96,12 @@ public:
     Nor n2(n1.get_Y(), n1.get_Y());
     Y = n2.get_Y();
   }
-  bool get_Y() const { return Y; }
   virtual ~Or() { /*cout<<"Or destroyed\n";*/ }
 };
 class Xor : public Combinational {
 protected:
   bool A;
   bool B;
-  bool Y;
 
 public:
   Xor(bool A, bool B) {
@@ -122,14 +114,12 @@ public:
     Nand n5(n2.get_Y(), n4.get_Y());
     Y = n5.get_Y();
   }
-  bool get_Y() const { return Y; }
   virtual ~Xor() { /*cout<<"Xor destroyed\n";*/ }
 };
 class Xnor : public Combinational {
 protected:
   bool A;
   bool B;
-  bool Y;
 
 public:
   Xnor(bool A, bool B) {
@@ -143,7 +133,6 @@ public:
     Nand n6(n5.get_Y(), n5.get_Y());
     Y = n6.get_Y();
   }
-  bool get_Y() const { return Y; }
   virtual ~Xnor() { /*cout<<"Xor destroyed\n";*/ }
 };
 class Full_Adder : public Combinational {
@@ -151,7 +140,6 @@ protected:
   bool A;
   bool B;
   bool Cin;
-  bool Y;
   bool Cout;
 
 public:
@@ -173,7 +161,6 @@ public:
     Or n10(n9.get_Y(), n8.get_Y());
     Cout = n10.get_Y();
   }
-  bool get_Y() const { return Y; }
   bool get_Cout() const { return Cout; }
   virtual ~Full_Adder() { /*cout<<"Full adeer destroyed\n";*/ }
 };
@@ -209,7 +196,6 @@ protected:
   bool A;
   bool B;
   bool S;
-  bool Y;
 
 public:
   Mux(bool A, bool B, bool S) {
@@ -222,7 +208,6 @@ public:
     Or n4(n2.get_Y(), n3.get_Y());
     this->Y = n4.get_Y();
   }
-  bool get_Y() const { return Y; }
   virtual ~Mux() { /*cout<<"Mux Destroyed\n;*/ }
 };
 class Encoder : public Combinational {
@@ -400,6 +385,8 @@ class Sequential : public Circuits {
 protected:
   bool Clk;
   bool Rst;
+  bool Q;
+  bool Qn;
 
 public:
   virtual void Clock(int S) {
@@ -416,11 +403,12 @@ public:
     Rst = 0;
   }
   virtual ~Sequential() {}
+  virtual bool get_Q() const { return Q; }
+  virtual bool get_Qn() const { return Qn; }
 };
 class Dlatch : public Sequential {
 protected:
   bool D;
-  bool Q;
 
 public:
   Dlatch(int S, int R) {
@@ -440,13 +428,10 @@ public:
     ClockThread.join();
   }
   virtual ~Dlatch() {}
-  bool get_Q() { return Q; }
 };
 class Dlatch2 : public Sequential {
 protected:
   bool D;
-  bool Q;
-  bool Qn;
 
 public:
   Dlatch2() {
@@ -468,15 +453,11 @@ public:
       Qn = next_Qn;
     }
   }
-  bool get_Q() const { return Q; }
-  bool get_Qn() const { return Qn; }
   virtual ~Dlatch2() {}
 };
 class Dflipflop : public Sequential {
 protected:
   bool D;
-  bool Q;
-  bool Qn;
   Dlatch2 d1;
   Dlatch2 d2;
 
@@ -494,8 +475,6 @@ public:
     Qn = d2.get_Qn();
   }
   virtual ~Dflipflop() {}
-  bool get_Q() const { return Q; }
-  bool get_Qn() const { return Qn; }
 };
 class Counter : public Sequential {
 protected:
@@ -508,7 +487,7 @@ public:
     f1.Setvalue(n1.get_Y(), Clk);
   }
   virtual ~Counter() {}
-  bool get_Q() const { return f1.get_Q(); }
+  virtual bool get_Q() const override { return f1.get_Q(); }
 };
 class Counter3b : public Sequential {
 protected:
